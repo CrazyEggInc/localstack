@@ -50,6 +50,15 @@ resource "aws_iam_role_policy" "localstack_codebuild_policy" {
                 "Resource": [
                     "arn:aws:codebuild:${local.workspace["region"]}:173509387151:report-group/localstack-*"
                 ]
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "secretsmanager:GetSecretValue"
+                ],
+                "Resource": [
+                    "arn:aws:secretsmanager:${local.workspace["region"]}:173509387151:secret:CodeBuild*"
+                ]
             }
         ]
     }
@@ -103,7 +112,20 @@ resource "aws_codebuild_project" "localstack" {
 
     environment_variable {
       name  = "DOCKER_HUB_TOKEN"
-      value = "6e1d115f-9761-429b-8881-56940ae7a28f"
+      value = "CodeBuild:DOCKER_HUB_TOKEN"
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "GHCR_USERNAME"
+      value = "CodeBuild:GHCR_USERNAME"
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "GHCR_TOKEN"
+      value = "CodeBuild:GHCR_TOKEN"
+      type  = "SECRETS_MANAGER"
     }
   }
 
